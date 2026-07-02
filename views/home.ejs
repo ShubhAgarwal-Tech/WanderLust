@@ -15,14 +15,14 @@
         placeholder="Where to? Try Bali, Tokyo, Mountains…"
         autocomplete="off"
         aria-label="Search destinations"
-        aria-autocomplete="list"
-        aria-controls="home-search-suggestions"
       />
-      <button type="submit" class="wl-btn wl-btn--primary">Search</button>
-      <ul class="home-search__suggestions" id="home-search-suggestions" role="listbox"></ul>
+      <button type="submit" class="wl-btn wl-btn--primary home-search__submit" aria-label="Search">
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        <span class="home-search__submit-text">Search</span>
+      </button>
     </form>
 
-    <div class="d-flex flex-wrap gap-2 mt-4">
+    <div class="home-hero__actions d-flex gap-2 mt-4">
       <a href="/listings" class="wl-btn wl-btn--white">Explore all stays</a>
       <% if (!currUser) { %>
       <a href="/signup" class="wl-btn wl-btn--ghost">Create account</a>
@@ -180,7 +180,7 @@
   <div class="home-cta wl-reveal">
     <h2 class="wl-h2">Ready to wander?</h2>
     <p>Join thousands of travelers discovering unique stays every day.</p>
-    <div class="d-flex flex-wrap gap-2 justify-content-center">
+    <div class="home-cta__actions d-flex gap-2 justify-content-center">
       <a href="/listings" class="wl-btn wl-btn--white">Browse listings</a>
       <% if (!currUser) { %>
       <a href="/signup" class="wl-btn wl-btn--ghost">Get started</a>

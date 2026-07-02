@@ -192,6 +192,28 @@
   .wl-listings-toolbar {
     align-items: flex-start;
   }
+
+  .wl-page-actions,
+  .wl-mobile-actions {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    width: 100%;
+    gap: 0.5rem;
+  }
+
+  .wl-page-actions .wl-btn,
+  .wl-page-actions form,
+  .wl-mobile-actions .wl-btn,
+  .wl-mobile-actions form,
+  .wl-mobile-actions button {
+    flex: 1 1 0;
+    width: auto !important;
+    min-width: 0;
+    justify-content: center;
+    white-space: nowrap;
+  }
 }
 
 @media (min-width: 768px) and (max-width: 991px) {
