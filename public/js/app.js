@@ -12,10 +12,43 @@
 
   const toggle = document.getElementById("wl-nav-toggle");
   const mobileNav = document.getElementById("wl-mobile-nav");
+  const navBackdrop = document.getElementById("wl-nav-backdrop");
   if (toggle && mobileNav) {
-    const closeMenu = () => {
-      mobileNav.classList.remove("is-open");
+    let lockedScrollY = 0;
+    let menuIsOpen = false;
+
+    const lockBodyScroll = () => {
+      lockedScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${lockedScrollY}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
+      document.body.style.width = "100%";
+      document.body.classList.add("nav-open");
+      menuIsOpen = true;
+    };
+
+    const unlockBodyScroll = () => {
+      if (!menuIsOpen) return;
+      const scrollY = lockedScrollY;
+      menuIsOpen = false;
       document.body.classList.remove("nav-open");
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.width = "";
+      document.documentElement.scrollTop = scrollY;
+      document.body.scrollTop = scrollY;
+    };
+
+    const closeMenu = () => {
+      if (!mobileNav.classList.contains("is-open")) return;
+      mobileNav.classList.remove("is-open");
+      navbar?.classList.remove("is-menu-open");
+      navBackdrop?.classList.remove("is-visible");
+      navBackdrop?.setAttribute("aria-hidden", "true");
+      unlockBodyScroll();
       toggle.setAttribute("aria-expanded", "false");
       toggle.setAttribute("aria-label", "Open menu");
     };
@@ -25,7 +58,10 @@
         if (menu !== mobileNav) menu.classList.remove("is-open");
       });
       mobileNav.classList.add("is-open");
-      document.body.classList.add("nav-open");
+      navbar?.classList.add("is-menu-open");
+      navBackdrop?.classList.add("is-visible");
+      navBackdrop?.setAttribute("aria-hidden", "false");
+      lockBodyScroll();
       toggle.setAttribute("aria-expanded", "true");
       toggle.setAttribute("aria-label", "Close menu");
     };
@@ -45,9 +81,8 @@
       if (event.target.closest("a, button[type='submit']")) closeMenu();
     });
 
-    document.addEventListener("pointerdown", (event) => {
-      if (!mobileNav.classList.contains("is-open")) return;
-      if (event.target.closest("#wl-mobile-nav, #wl-nav-toggle")) return;
+    navBackdrop?.addEventListener("click", (event) => {
+      event.preventDefault();
       closeMenu();
     });
 
@@ -59,6 +94,8 @@
 
     window.WLCloseNavMenu = closeMenu;
   }
+
+  document.body.classList.add("has-fixed-nav");
 
   document.querySelectorAll(".wl-reveal").forEach((el) => {
     const observer = new IntersectionObserver(
@@ -137,6 +174,7 @@
       if (!nextMain) throw new Error("Missing main content");
       document.title = doc.title;
       document.body.className = doc.body.className;
+      document.body.classList.add("has-fixed-nav");
       document.body.dataset.loggedIn = doc.body.dataset.loggedIn || "false";
       window.WLCloseNavMenu?.();
       main.innerHTML = nextMain.innerHTML;

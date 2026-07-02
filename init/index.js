@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const mongoose = require("mongoose");
 const { LISTING_CATALOG } = require("../utils/listingCatalog.js");
 const { normalizeListingImage } = require("../utils/provenImages.js");
@@ -5,12 +7,12 @@ const Listing = require("../models/listing.js");
 const Review = require("../models/review.js");
 const User = require("../models/user.js");
 
-main()
-  .then(() => console.log("connected to Database"))
-  .catch((err) => console.log(err));
+const dbUrl =
+  process.env.ATLASDB_URL || "mongodb://127.0.0.1:27017/wanderlust";
 
 async function main() {
-  await mongoose.connect("mongodb://127.0.0.1:27017/wanderlust");
+  await mongoose.connect(dbUrl);
+  console.log("connected to Database");
 }
 
 const REVIEW_COMMENTS = [
@@ -59,7 +61,16 @@ const initDB = async () => {
   }
 
   console.log(`Initialized ${insertedListings.length} curated listings`);
-  process.exit(0);
 };
 
-initDB();
+main()
+  .then(() => initDB())
+  .then(async () => {
+    await mongoose.connection.close();
+    process.exit(0);
+  })
+  .catch(async (err) => {
+    console.error("Seed failed:", err);
+    await mongoose.connection.close();
+    process.exit(1);
+  });

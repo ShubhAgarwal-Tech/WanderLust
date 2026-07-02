@@ -122,8 +122,17 @@ body {
 }
 
 body.nav-open {
-  overflow: hidden;
+  overscroll-behavior: none;
   touch-action: none;
+}
+
+body.has-fixed-nav {
+  padding-top: var(--wl-nav-height);
+}
+
+.page-home.has-fixed-nav,
+.page-home {
+  padding-top: 0;
 }
 
 body::selection {
@@ -180,6 +189,10 @@ a {
 .main-content {
   flex: 1;
   width: 100%;
+}
+
+body.has-fixed-nav:not(.page-home) .main-content {
+  padding-top: 0;
 }
 
 .main-content .container-fluid-layout {

@@ -1,7 +1,10 @@
 /* ========== Navbar ========== */
 .wl-navbar {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
   z-index: 1030;
   isolation: isolate;
   min-height: var(--wl-nav-height);
@@ -11,6 +14,10 @@
   border-bottom: 1px solid transparent;
   transition: box-shadow var(--wl-transition), border-color var(--wl-transition),
     background var(--wl-transition);
+}
+
+.wl-navbar.is-menu-open {
+  z-index: 1040;
 }
 
 .wl-navbar.is-scrolled {
@@ -146,17 +153,18 @@
 }
 
 .wl-mobile-nav {
-  position: absolute;
-  top: 100%;
+  position: fixed;
+  top: var(--wl-nav-height);
   right: clamp(0.75rem, 4vw, 1.5rem);
   left: auto;
   width: min(360px, calc(100vw - 1.5rem));
+  z-index: 1041;
   background: var(--wl-surface-elevated);
   border: 1px solid var(--wl-border);
   border-radius: var(--wl-radius-lg);
   padding: 0.65rem;
   box-shadow: var(--wl-shadow-lg);
-  max-height: calc(100dvh - var(--wl-nav-height));
+  max-height: calc(100dvh - var(--wl-nav-height) - 0.75rem);
   overflow-y: auto;
   opacity: 0;
   visibility: hidden;
@@ -200,6 +208,28 @@
   }
 }
 
+.wl-nav-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1035;
+  background: rgba(15, 23, 42, 0.45);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.wl-nav-backdrop.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+[data-theme="dark"] .wl-nav-backdrop {
+  background: rgba(0, 0, 0, 0.62);
+}
+
 /* ========== Footer ========== */
 .wl-footer {
   background: var(--wl-bg-subtle);
@@ -212,6 +242,10 @@
   grid-template-columns: 1fr;
   gap: 2rem;
   padding: clamp(2rem, 5vw, 3rem) 0 clamp(1.5rem, 4vw, 2rem);
+}
+
+.wl-footer__links-row {
+  display: contents;
 }
 
 @media (min-width: 576px) {
