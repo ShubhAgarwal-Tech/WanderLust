@@ -1,146 +1,220 @@
-<% layout("/layouts/boilerplate")%>
-<div class="row mt-3">
-  <div class="col-8 offset-3">
-    <h3><%=listing.title%></h3>
-  </div>
-  <div class="card col-6 offset-3 show-card listing-card">
-    <img
-      src="<%=listing.image.url%>"
-      class="card-img-top show-img"
-      alt="listing_image"
-    />
-    <div class="card-body">
-      <p class="card-text">
-        Owned by <i><%=listing.owner.username%></i><br />
-        <%=listing.description%> <br />
-        &#8377; <%=listing.price.toLocaleString("en-IN")%> <br />
-        <%=listing.location%> <br />
-        <%=listing.country%>
-      </p>
+<% layout("/layouts/boilerplate") %>
+<%
+  const galleryItems = [];
+  if (listing.image?.url) galleryItems.push(listing.image);
+  if (listing.images && listing.images.length > 0) {
+    listing.images.forEach((img) => {
+      if (img?.url && !galleryItems.some((item) => item.url === img.url)) galleryItems.push(img);
+    });
+  }
+  const gallery = galleryItems;
+%>
+
+<div class="row mt-2">
+  <div class="col-12">
+    <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
+      <div>
+        <h1 class="h3 fw-bold mb-1"><%= listing.title %></h1>
+        <p class="text-muted mb-0">
+          <i class="fa-solid fa-location-dot me-1" aria-hidden="true"></i>
+          <%= listing.location %>, <%= listing.country %>
+          <span class="mx-2">·</span>
+          <span class="wl-badge"><%= listing.category %></span>
+          <% if (listing.propertyType) { %>
+          <span class="wl-badge ms-1"><%= listing.propertyType %></span>
+          <% } %>
+        </p>
+        <% if (avgRating) { %>
+        <p class="mb-0 mt-1">
+          <i class="fa-solid fa-star" aria-hidden="true"></i>
+          <strong><%= avgRating.toFixed(1) %></strong>
+          <span class="text-muted">(<%= listing.reviews.length %> reviews)</span>
+        </p>
+        <% } %>
+      </div>
+      <div class="wl-page-actions">
+        <% if (currUser) { %>
+        <button
+          type="button"
+          class="wl-btn wl-btn--ghost wl-btn--sm js-favorite-toggle"
+          data-listing-id="<%= listing._id %>"
+          data-favorited="<%= isFavorited ? 'true' : 'false' %>"
+          data-auth="true"
+        >
+          <i class="<%= isFavorited ? 'fa-solid fa-heart text-danger' : 'fa-regular fa-heart' %>"></i>
+          <%= isFavorited ? 'Saved' : 'Save' %>
+        </button>
+        <% } else { %>
+        <a href="/login" class="wl-btn wl-btn--ghost wl-btn--sm"><i class="fa-regular fa-heart"></i> Save</a>
+        <% } %>
+        <button type="button" class="wl-btn wl-btn--ghost wl-btn--sm" onclick="navigator.share?.({ title: '<%= listing.title %>', url: location.href })">
+          <i class="fa-solid fa-share-nodes"></i> Share
+        </button>
+      </div>
     </div>
+
+    <% if (gallery.length > 1) { %>
+    <div class="wl-gallery-grid mb-4" id="listing-gallery">
+      <div class="wl-gallery-main wl-img-wrap">
+        <img src="<%= gallery[0].url %>" alt="<%= listing.title %>" class="wl-img w-100 h-100 wl-object-cover" data-title="<%= listing.title %>" data-category="<%= listing.category %>" />
+        <span class="wl-img-skeleton" aria-hidden="true"></span>
+      </div>
+      <% gallery.slice(1, 3).forEach((img, i) => { %>
+      <div class="wl-gallery-thumb wl-img-wrap">
+        <img src="<%= img.url %>" alt="" class="wl-img w-100 h-100 wl-object-cover" data-title="<%= listing.title %>" data-category="<%= listing.category %>" />
+        <span class="wl-img-skeleton" aria-hidden="true"></span>
+      </div>
+      <% }) %>
+    </div>
+    <% } else if (gallery[0]) { %>
+    <div class="wl-img-wrap wl-show-hero-img wl-media-16x10 mb-4">
+      <img src="<%= gallery[0].url %>" class="wl-img w-100 h-100 wl-object-cover" alt="<%= listing.title %>" data-title="<%= listing.title %>" data-category="<%= listing.category %>" />
+      <span class="wl-img-skeleton" aria-hidden="true"></span>
+    </div>
+    <% } %>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <section class="mb-4 wl-reveal">
+      <h2 class="h5 fw-bold">About this stay</h2>
+      <p class="text-muted mb-2">Hosted by <strong><%= listing.owner.username %></strong></p>
+      <% if (listing.maxGuests) { %>
+      <p class="small text-muted"><i class="fa-solid fa-user-group me-1"></i> Up to <%= listing.maxGuests %> guests</p>
+      <% } %>
+      <p class="wl-text-preline"><%= listing.description %></p>
+    </section>
+
+    <% if (listing.amenities && listing.amenities.length) { %>
+    <section class="mb-4 wl-reveal">
+      <h2 class="h5 fw-bold mb-3">What this place offers</h2>
+      <div class="row row-cols-1 row-cols-sm-2 g-3">
+        <% listing.amenities.forEach((am) => { %>
+        <div class="col d-flex align-items-center gap-2">
+          <i class="fa-solid fa-check text-success" aria-hidden="true"></i>
+          <span><%= am %></span>
+        </div>
+        <% }) %>
+      </div>
+    </section>
+    <% } %>
+
+    <section class="mb-4 wl-reveal">
+      <h2 class="h5 fw-bold mb-3">Where you'll be</h2>
+      <div
+        id="listing-map"
+        class="wl-map wl-map--lg"
+        data-lat="<%= listing.coordinates?.lat || '' %>"
+        data-lng="<%= listing.coordinates?.lng || '' %>"
+        data-title="<%= listing.title %>"
+        aria-label="Map showing property location"
+      ></div>
+      <p class="small text-muted mt-2 mb-0">
+        <i class="fa-solid fa-location-dot me-1"></i>
+        <%= listing.location %>, <%= listing.country %>
+        <span class="ms-1">· Powered by OpenStreetMap</span>
+      </p>
+    </section>
+
+    <section class="mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h5 fw-bold mb-0">Reviews</h2>
+        <span class="text-muted small"><%= listing.reviews.length %> total</span>
+      </div>
+
+      <% if (currUser) { %>
+      <form action="/listings/<%= listing._id %>/reviews" method="post" novalidate class="needs-validation border rounded-4 p-3 mb-4">
+        <label class="form-label fw-semibold">Leave a review</label>
+        <div class="mb-3">
+          <fieldset class="starability-growRotate">
+            <input type="radio" id="rate-5" name="review[rating]" value="5" />
+            <label for="rate-5" title="Amazing">5 stars</label>
+            <input type="radio" id="rate-4" name="review[rating]" value="4" />
+            <label for="rate-4" title="Very good">4 stars</label>
+            <input type="radio" id="rate-3" name="review[rating]" value="3" checked />
+            <label for="rate-3" title="Average">3 stars</label>
+            <input type="radio" id="rate-2" name="review[rating]" value="2" />
+            <label for="rate-2" title="Not good">2 stars</label>
+            <input type="radio" id="rate-1" name="review[rating]" value="1" />
+            <label for="rate-1" title="Terrible">1 star</label>
+          </fieldset>
+        </div>
+        <textarea name="review[comment]" class="form-control mb-3" rows="3" required placeholder="Share your experience…"></textarea>
+        <button class="wl-btn wl-btn--primary">Submit review</button>
+      </form>
+      <% } %>
+
+      <div class="row g-3">
+        <% for (const review of listing.reviews) { %>
+        <div class="col-md-6">
+          <div class="border rounded-4 p-3 h-100">
+            <strong>@<%= review.author.username %></strong>
+            <p class="starability-result mb-2" data-rating="<%= review.rating %>"></p>
+            <p class="mb-0 small"><%= review.comment %></p>
+          </div>
+        </div>
+        <% } %>
+      </div>
+    </section>
+
+    <% if (currUser && currUser._id.equals(listing.owner._id)) { %>
+    <div class="wl-mobile-actions mb-4">
+      <a href="/listings/<%= listing._id %>/edit" class="wl-btn wl-btn--primary">Edit listing</a>
+      <form action="/listings/<%= listing._id %>?_method=DELETE" method="post" onsubmit="return confirm('Delete this listing?')">
+        <button class="wl-btn wl-btn--ghost">Delete</button>
+      </form>
+    </div>
+    <% } %>
   </div>
 
-  <%if(currUser&&currUser._id.equals(listing.owner._id)){%>
-  <div class="btns">
-    <a
-      href="/listings/<%=listing._id%>/edit"
-      class="btn btn-dark col-1 offset-3 edit-btn"
-      >Edit</a
-    >
-    <form action="/listings/<%=listing._id%>?_method=Delete" method="post">
-      <button class="btn btn-dark offset-5">Delete</button>
-    </form>
-  </div>
-  <%}%>
-  <hr />
-
-  <div class="col-8 offset-3 mb-3">
-    <%if(currUser){%>
-    <h4>Give a Review</h4>
-    <form
-      action="/listings/<%=listing._id%>/reviews"
-      method="post"
-      novalidate
-      class="needs-validation"
-    >
-      <!-- <div class="mb-3 mt-3">
-        <label for="rating" class="form-label">Rating</label>
-        <input
-          type="range"
-          min="1"
-          max="5"
-          id="rating"
-          name="review[rating]"
-          class="form-range"
-        />
-      </div> -->
-      <div class="mb-3 mt-3">
-        <label for="rating" class="form-label">Rating</label>
-        <fieldset class="starability-growRotate">
-          <input
-            type="radio"
-            id="no-rate"
-            class="input-no-rate"
-            name="review[rating]"
-            value="1"
-            checked
-            aria-label="No rating."
-          />
-          <input
-            type="radio"
-            id="first-rate1"
-            name="review[rating]"
-            value="1"
-          />
-          <label for="first-rate1" title="Terrible">1 star</label>
-          <input
-            type="radio"
-            id="first-rate2"
-            name="review[rating]"
-            value="2"
-          />
-          <label for="first-rate2" title="Not good">2 stars</label>
-          <input
-            type="radio"
-            id="first-rate3"
-            name="review[rating]"
-            value="3"
-          />
-          <label for="first-rate3" title="Average">3 stars</label>
-          <input
-            type="radio"
-            id="first-rate4"
-            name="review[rating]"
-            value="4"
-          />
-          <label for="first-rate4" title="Very good">4 stars</label>
-          <input
-            type="radio"
-            id="first-rate5"
-            name="review[rating]"
-            value="5"
-          />
-          <label for="first-rate5" title="Amazing">5 stars</label>
-        </fieldset>
-      </div>
-      <div class="mb-3 mt-3">
-        <label for="comment" class="form-label">Comments</label>
-        <textarea
-          name="review[comment]"
-          id="comment"
-          cols="30"
-          rows="5"
-          class="form-control"
-          required
-        ></textarea>
-        <div class="invalid-feedback">Please give comment for review</div>
-      </div>
-      <button class="btn btn-outline-dark">Submit</button>
-    </form>
-    <hr />
-    <%}%>
-
-    <p><b>All Reviews</b></p>
-    <div class="row">
-      <%for(review of listing.reviews){%>
-      <div class="card col-5 ms-3 mb-3">
-        <div class="card-body">
-          <h5 class="card-title">@<%=review.author.username%></h5>
-          <p
-            class="starability-result card-text"
-            data-rating="<%=review.rating%>"
-          ></p>
-          <p class="card-text"><%=review.comment%></p>
-          <form
-            action="/listings/<%=listing._id%>/reviews/<%=review._id%>?_method=Delete"
-            class="mb-3"
-            method="post"
-          >
-            <button class="btn btn-sm btn-dark">Delete</button>
-          </form>
+  <div class="col-lg-5">
+    <div class="wl-booking-widget wl-booking-widget--sticky">
+      <div class="d-flex justify-content-between align-items-baseline mb-3">
+        <div>
+          <span class="fs-4 fw-bold">&#8377;<%= listing.price.toLocaleString('en-IN') %></span>
+          <span class="text-muted"> / night</span>
         </div>
       </div>
-      <%}%>
+
+      <% if (currUser) { %>
+      <form action="/bookings/listings/<%= listing._id %>/checkout" method="GET" class="js-booking-preview-form">
+        <div class="row g-2 mb-2">
+          <div class="col-6">
+            <label class="form-label small fw-semibold">Check-in</label>
+            <input type="date" name="checkIn" class="wl-input" required min="<%= new Date().toISOString().slice(0,10) %>" />
+          </div>
+          <div class="col-6">
+            <label class="form-label small fw-semibold">Check-out</label>
+            <input type="date" name="checkOut" class="wl-input" required />
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">Guests</label>
+          <select name="guests" class="wl-select">
+            <% for (let g = 1; g <= (listing.maxGuests || 8); g++) { %>
+            <option value="<%= g %>"><%= g %> guest<%= g > 1 ? 's' : '' %></option>
+            <% } %>
+          </select>
+        </div>
+        <button type="submit" class="wl-btn wl-btn--primary w-100">Check availability</button>
+      </form>
+      <p class="text-muted small text-center mt-2 mb-0">Secure checkout · No charge until you confirm</p>
+      <% } else { %>
+      <a href="/login" class="wl-btn wl-btn--primary w-100">Log in to book</a>
+      <p class="text-muted small text-center mt-2 mb-0">Create an account to reserve this stay</p>
+      <% } %>
     </div>
   </div>
 </div>
+
+<% if (similarListings && similarListings.length) { %>
+<section class="mt-5 pt-4 border-top wl-reveal">
+  <h2 class="wl-h2 mb-4">Similar stays</h2>
+  <div class="wl-listings-grid">
+    <% similarListings.forEach((item) => { %>
+    <%- include("../includes/listing-card.ejs", { listing: item, favoriteIds: typeof favoriteIds !== 'undefined' ? favoriteIds : [], currentUrl }) %>
+    <% }) %>
+  </div>
+</section>
+<% } %>

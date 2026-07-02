@@ -3,6 +3,7 @@ const router = express.Router();
 const wrapAsync = require("../utils/wrapAsync");
 const passport = require("passport");
 const { saveRedirectUrl } = require("../middleware.js");
+const { isLoggedin } = require("../middleware.js");
 const userController = require("../controllers/users.js");
 
 router
@@ -23,6 +24,8 @@ router
   );
 
 router.get("/logout", userController.logout);
+
+router.get("/favorites", isLoggedin, wrapAsync(userController.renderFavorites));
 
 module.exports = router;
 

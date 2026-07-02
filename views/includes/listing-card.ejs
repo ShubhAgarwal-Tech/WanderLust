@@ -1,0 +1,64 @@
+<% const listingId = listing._id; %>
+<% const isFav = typeof favoriteIds !== 'undefined' && favoriteIds.some((fid) => String(fid) === String(listingId) || (fid.equals && fid.equals(listingId))); %>
+<% const imgUrl = listing.image?.url || ''; %>
+<% const rating = listing.avgRating; %>
+<% const reviewCount = listing.reviewCount || 0; %>
+<% const imgCategory = listing.category || 'Trending'; %>
+
+<article class="listing-card" data-listing-card="<%= listingId %>">
+  <div class="listing-card__media">
+    <div class="wl-img-wrap wl-img-wrap--ratio">
+      <img
+        src="<%= imgUrl %>"
+        alt="<%= listing.title %>"
+        class="wl-img"
+        loading="lazy"
+        decoding="async"
+        data-title="<%= listing.title %>"
+        data-category="<%= imgCategory %>"
+        width="400"
+        height="380"
+      />
+      <span class="wl-img-skeleton" aria-hidden="true"></span>
+    </div>
+    <% if (listing.category && listing.category !== 'Trending') { %>
+    <span class="wl-badge listing-card__type"><%= listing.category %></span>
+    <% } %>
+    <% if (typeof currUser !== 'undefined' && currUser) { %>
+    <button
+      type="button"
+      class="listing-card__favorite js-favorite-toggle"
+      data-listing-id="<%= listingId %>"
+      data-favorited="<%= isFav ? 'true' : 'false' %>"
+      data-auth="true"
+      aria-pressed="<%= isFav %>"
+      aria-label="<%= isFav ? 'Remove from wishlist' : 'Add to wishlist' %>"
+    >
+      <i class="<%= isFav ? 'fa-solid fa-heart text-danger' : 'fa-regular fa-heart' %>" aria-hidden="true"></i>
+    </button>
+    <% } else { %>
+    <a href="/login" class="listing-card__favorite" aria-label="Sign in to save" onclick="event.stopPropagation()">
+      <i class="fa-regular fa-heart" aria-hidden="true"></i>
+    </a>
+    <% } %>
+    <a href="/listings/<%= listingId %>" class="listing-card__link" aria-label="View <%= listing.title %>"></a>
+  </div>
+  <div class="listing-card__body">
+    <h3 class="listing-card__title"><%= listing.location %>, <%= listing.country %></h3>
+    <p class="listing-card__meta"><%= listing.title %></p>
+    <p class="listing-card__price">
+      <% if (rating) { %>
+      <span class="listing-card__rating me-2">
+        <i class="fa-solid fa-star" aria-hidden="true"></i>
+        <%= rating.toFixed(1) %>
+        <% if (reviewCount) { %><span class="text-muted">(<%= reviewCount %>)</span><% } %>
+      </span>
+      <% } %>
+      <strong>&#8377;<%= Number(listing.price).toLocaleString('en-IN') %></strong>
+      <span class="text-muted"> night</span>
+    </p>
+    <% if (listing.propertyType) { %>
+    <p class="listing-card__meta mb-0"><%= listing.propertyType %></p>
+    <% } %>
+  </div>
+</article>

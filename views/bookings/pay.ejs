@@ -1,0 +1,45 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="row justify-content-center mt-3 mb-5">
+  <div class="col-lg-6">
+    <div class="wl-booking-widget">
+      <h1 class="h4 fw-bold mb-1">Complete payment</h1>
+      <p class="text-muted mb-3"><%= listing.title %></p>
+      <div class="wl-price-row mb-2">
+        <span><%= booking.nights %> nights · <%= booking.guests %> guests</span>
+        <strong>₹<%= booking.totalAmount.toLocaleString('en-IN') %></strong>
+      </div>
+      <p class="small text-muted mb-4">
+        <%= new Date(booking.checkIn).toLocaleDateString() %> →
+        <%= new Date(booking.checkOut).toLocaleDateString() %>
+      </p>
+
+      <% if (demoMode) { %>
+      <button type="button" id="wl-demo-pay" class="wl-btn wl-btn--primary w-100" data-booking-id="<%= booking._id %>">
+        Pay ₹<%= booking.totalAmount.toLocaleString('en-IN') %> (Demo)
+      </button>
+      <p class="small text-muted text-center mt-2">Simulates a successful payment for development.</p>
+      <% } else { %>
+      <button type="button" id="wl-razorpay-pay" class="wl-btn wl-btn--primary w-100">Pay with Razorpay</button>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<% if (!demoMode) { %>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  window.WL_PAYMENT = {
+    key: "<%= razorpayKeyId %>",
+    orderId: "<%= booking.razorpayOrderId %>",
+    amount: <%= booking.totalAmount * 100 %>,
+    bookingId: "<%= booking._id %>",
+    title: <%- JSON.stringify(listing.title) %>,
+    name: "WanderLust",
+    email: "<%= currUser.email %>"
+  };
+</script>
+<script src="/js/checkout.js" defer></script>
+<% } else { %>
+<script src="/js/checkout.js" defer></script>
+<% } %>

@@ -1,0 +1,78 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="row g-4 mt-2">
+  <div class="col-lg-7">
+    <a href="/listings/<%= listing._id %>" class="text-muted small text-decoration-none mb-3 d-inline-block">
+      <i class="fa-solid fa-arrow-left"></i> Back to listing
+    </a>
+    <h1 class="h3 fw-bold">Confirm your trip</h1>
+    <p class="text-muted"><%= listing.title %> · <%= listing.location %>, <%= listing.country %></p>
+    <div class="wl-img-wrap wl-media-16x10 mb-3">
+      <img
+        src="<%= listing.image?.url || '' %>"
+        alt="<%= listing.title %>"
+        class="wl-img w-100 h-100 wl-object-cover"
+        data-title="<%= listing.title %>"
+        data-category="<%= listing.category %>"
+      />
+      <span class="wl-img-skeleton" aria-hidden="true"></span>
+    </div>
+
+    <form method="GET" action="/bookings/listings/<%= listing._id %>/checkout" class="wl-panel rounded-4 p-3 mb-3">
+      <h2 class="h6 fw-bold">Trip details</h2>
+      <div class="row g-2">
+        <div class="col-12 col-sm-6 col-md-4">
+          <label class="form-label small">Check-in</label>
+          <input type="date" name="checkIn" class="wl-input" required value="<%= preview?.checkIn || '' %>" min="<%= new Date().toISOString().slice(0,10) %>" />
+        </div>
+        <div class="col-12 col-sm-6 col-md-4">
+          <label class="form-label small">Check-out</label>
+          <input type="date" name="checkOut" class="wl-input" required value="<%= preview?.checkOut || '' %>" />
+        </div>
+        <div class="col-12 col-md-4">
+          <label class="form-label small">Guests</label>
+          <select name="guests" class="wl-select">
+            <% for (let g = 1; g <= (listing.maxGuests || 8); g++) { %>
+            <option value="<%= g %>" <%= preview?.guests == g ? 'selected' : '' %>><%= g %></option>
+            <% } %>
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="wl-btn wl-btn--ghost mt-3">Update dates</button>
+    </form>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="wl-booking-widget wl-booking-widget--sticky">
+      <h2 class="h6 fw-bold mb-3">Price details</h2>
+      <% if (preview) { %>
+      <div class="wl-price-row small mb-2">
+        <span>₹<%= preview.pricePerNight.toLocaleString('en-IN') %> × <%= preview.nights %> nights</span>
+        <span>₹<%= preview.subtotal.toLocaleString('en-IN') %></span>
+      </div>
+      <div class="wl-price-row small mb-2">
+        <span>Service fee</span>
+        <span>₹<%= preview.serviceFee.toLocaleString('en-IN') %></span>
+      </div>
+      <hr />
+      <div class="wl-price-row fw-bold mb-3">
+        <span>Total (INR)</span>
+        <span>₹<%= preview.totalAmount.toLocaleString('en-IN') %></span>
+      </div>
+      <form method="POST" action="/bookings/listings/<%= listing._id %>/checkout">
+        <input type="hidden" name="booking[checkIn]" value="<%= preview.checkIn %>" />
+        <input type="hidden" name="booking[checkOut]" value="<%= preview.checkOut %>" />
+        <input type="hidden" name="booking[guests]" value="<%= preview.guests %>" />
+        <button type="submit" class="wl-btn wl-btn--primary w-100">
+          Continue to payment
+        </button>
+      </form>
+      <% } else { %>
+      <p class="text-muted small">Select dates to see pricing and continue.</p>
+      <% } %>
+      <% if (demoMode) { %>
+      <p class="small text-muted mt-2 mb-0"><i class="fa-solid fa-circle-info"></i> Demo mode — no Razorpay keys required.</p>
+      <% } %>
+    </div>
+  </div>
+</div>

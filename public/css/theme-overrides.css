@@ -1,0 +1,365 @@
+/* Bootstrap & global harmonization — light + dark */
+
+.text-muted {
+  color: var(--wl-text-muted) !important;
+}
+
+.bg-light,
+.bg-white {
+  background-color: var(--wl-bg-subtle) !important;
+}
+
+[data-theme="dark"] .bg-light,
+[data-theme="dark"] .bg-white {
+  background-color: var(--wl-surface) !important;
+}
+
+[data-theme="dark"] {
+  --bs-body-bg: var(--wl-bg);
+  --bs-body-color: var(--wl-text);
+  --bs-border-color: var(--wl-border);
+  --bs-secondary-color: var(--wl-text-muted);
+  --bs-tertiary-bg: var(--wl-bg-subtle);
+  --bs-emphasis-color: var(--wl-text);
+  --bs-link-color: var(--wl-primary);
+  --bs-link-hover-color: var(--wl-primary-hover);
+}
+
+body,
+.modal-content,
+.dropdown-menu,
+.offcanvas,
+.list-group-item,
+.accordion-item,
+.table {
+  background-color: var(--wl-bg);
+  color: var(--wl-text);
+}
+
+.modal-content,
+.dropdown-menu,
+.offcanvas {
+  border-color: var(--wl-border);
+  box-shadow: var(--wl-shadow-lg);
+}
+
+.dropdown-item {
+  color: var(--wl-text);
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background-color: var(--wl-surface-hover);
+  color: var(--wl-text);
+}
+
+.modal-header,
+.modal-footer {
+  border-color: var(--wl-border);
+}
+
+/* Panels (replace raw bootstrap border boxes) */
+.wl-panel {
+  background: var(--wl-surface);
+  border: 1px solid var(--wl-border);
+  color: var(--wl-text);
+}
+
+/* Alerts */
+.alert-success {
+  background-color: #ecfdf5;
+  border-color: #a7f3d0;
+  color: #065f46;
+}
+
+[data-theme="dark"] .alert-success {
+  background-color: #14532d;
+  border-color: #166534;
+  color: #bbf7d0;
+}
+
+.alert-danger {
+  background-color: #fef2f2;
+  border-color: #fecaca;
+  color: #991b1b;
+}
+
+[data-theme="dark"] .alert-danger {
+  background-color: #450a0a;
+  border-color: #7f1d1d;
+  color: #fecaca;
+}
+
+/* Forms */
+.form-control,
+.form-select,
+.form-control:disabled,
+.form-select:disabled {
+  background-color: var(--wl-surface) !important;
+  border-color: var(--wl-border) !important;
+  color: var(--wl-text) !important;
+  min-height: 44px;
+}
+
+.form-control::placeholder {
+  color: var(--wl-text-muted) !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+  background-color: var(--wl-surface) !important;
+  border-color: var(--wl-primary) !important;
+  color: var(--wl-text) !important;
+  box-shadow: 0 0 0 3px var(--wl-primary-soft) !important;
+}
+
+.form-label {
+  color: var(--wl-text);
+}
+
+.form-check-label {
+  color: var(--wl-text);
+}
+
+.form-check-input {
+  background-color: var(--wl-surface);
+  border-color: var(--wl-border);
+}
+
+[data-theme="dark"] .form-check-input:checked {
+  background-color: var(--wl-primary);
+  border-color: var(--wl-primary);
+}
+
+/* Cards & borders */
+.border,
+.card {
+  border-color: var(--wl-border) !important;
+}
+
+.card,
+.border.rounded-4,
+.wl-panel {
+  background-color: var(--wl-surface) !important;
+  color: var(--wl-text) !important;
+}
+
+.rounded-4.border,
+.border.rounded,
+.border.rounded-3 {
+  background-color: var(--wl-surface) !important;
+  color: var(--wl-text) !important;
+}
+
+/* Bootstrap buttons — fix invisible dark mode */
+.btn {
+  border-radius: var(--wl-radius-pill);
+}
+
+.btn-dark,
+.btn-outline-dark {
+  --bs-btn-color: var(--wl-text);
+  --bs-btn-bg: var(--wl-surface-elevated);
+  --bs-btn-border-color: var(--wl-border);
+  --bs-btn-hover-color: var(--wl-text);
+  --bs-btn-hover-bg: var(--wl-surface-hover);
+  --bs-btn-hover-border-color: var(--wl-border-strong);
+}
+
+[data-theme="dark"] .btn-dark,
+[data-theme="dark"] .btn-outline-dark {
+  color: var(--wl-text) !important;
+  background-color: var(--wl-surface-elevated) !important;
+  border-color: var(--wl-border) !important;
+}
+
+[data-theme="dark"] .btn-dark:hover,
+[data-theme="dark"] .btn-outline-dark:hover {
+  background-color: var(--wl-surface-hover) !important;
+  color: var(--wl-text) !important;
+}
+
+.btn-light {
+  background-color: var(--wl-surface) !important;
+  color: var(--wl-text) !important;
+  border-color: var(--wl-border) !important;
+}
+
+.btn-primary,
+.btn-danger {
+  color: #fff !important;
+}
+
+.btn-success {
+  background-color: #16a34a !important;
+  border-color: #16a34a !important;
+  color: #fff !important;
+}
+
+.btn-outline-success {
+  color: #16a34a !important;
+  border-color: #16a34a !important;
+}
+
+[data-theme="dark"] .btn-outline-success {
+  color: #4ade80 !important;
+}
+
+.btn-outline-danger {
+  color: var(--wl-primary) !important;
+  border-color: var(--wl-primary) !important;
+}
+
+[data-theme="dark"] .btn-outline-danger {
+  color: #ff7a92 !important;
+}
+
+/* Links */
+a:not(.wl-btn):not(.listing-card__link):not(.wl-navbar__brand) {
+  color: var(--wl-primary);
+}
+
+a:not(.wl-btn):hover {
+  color: var(--wl-primary-hover);
+}
+
+/* Headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+  color: var(--wl-text);
+}
+
+hr {
+  border-color: var(--wl-border);
+  opacity: 1;
+}
+
+code {
+  background: var(--wl-bg-subtle);
+  color: var(--wl-primary);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+}
+
+/* Carousel */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
+}
+
+/* Reviews */
+.starability-result {
+  color: var(--wl-text);
+}
+
+/* Leaflet */
+.wl-map--ready {
+  min-height: clamp(240px, 40vh, 420px);
+  z-index: 1;
+}
+
+.leaflet-container {
+  background: var(--wl-bg-subtle);
+  font-family: var(--wl-font);
+}
+
+[data-theme="dark"] .leaflet-container {
+  background: var(--wl-surface);
+}
+
+[data-theme="dark"] .wl-map-tiles--dark {
+  filter: invert(0.9) hue-rotate(180deg) brightness(0.78) contrast(1.05) saturate(0.75);
+}
+
+.leaflet-control-zoom a {
+  background: var(--wl-surface-elevated) !important;
+  color: var(--wl-text) !important;
+  border-color: var(--wl-border) !important;
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: var(--wl-surface-elevated) !important;
+  color: var(--wl-text) !important;
+  border: 1px solid var(--wl-border);
+}
+
+.leaflet-control-attribution {
+  background: var(--wl-surface) !important;
+  color: var(--wl-text-muted) !important;
+  font-size: 10px !important;
+}
+
+.leaflet-control-attribution a {
+  color: var(--wl-primary) !important;
+}
+
+.wl-map-marker {
+  background: transparent;
+  border: none;
+}
+
+.wl-map-marker-pin {
+  width: 28px;
+  height: 28px;
+  background: var(--wl-primary);
+  border: 3px solid #fff;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  box-shadow: var(--wl-shadow);
+  margin-left: 4px;
+}
+
+.wl-map-marker-pin::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.badge.text-bg-warning,
+.text-bg-warning {
+  color: #3b2600 !important;
+  background-color: #fde68a !important;
+}
+
+[data-theme="dark"] .badge.text-bg-warning,
+[data-theme="dark"] .text-bg-warning {
+  color: #fef3c7 !important;
+  background-color: #78350f !important;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0.75;
+}
+
+[data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+/* Home hero buttons on dark gradient — keep readable */
+.home-hero .wl-btn--ghost {
+  border-color: rgba(255, 255, 255, 0.45);
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.home-hero .wl-btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff !important;
+}

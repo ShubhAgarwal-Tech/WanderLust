@@ -1,0 +1,73 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="row g-4 mt-2 mb-5">
+  <div class="col-lg-7">
+    <a href="/bookings" class="text-muted small text-decoration-none mb-3 d-inline-block">
+      <i class="fa-solid fa-arrow-left"></i> Back to bookings
+    </a>
+    <div class="wl-img-wrap wl-media-16x10 mb-3">
+      <img
+        src="<%= booking.listing?.image?.url || '' %>"
+        alt="<%= booking.listing?.title || 'Booked stay' %>"
+        class="wl-img w-100 h-100 wl-object-cover"
+        data-title="<%= booking.listing?.title || '' %>"
+        data-category="<%= booking.listing?.category || 'Trending' %>"
+        loading="lazy"
+        decoding="async"
+      />
+      <span class="wl-img-skeleton" aria-hidden="true"></span>
+    </div>
+    <h1 class="h3 fw-bold mb-1"><%= booking.listing.title %></h1>
+    <p class="text-muted mb-3">
+      <i class="fa-solid fa-location-dot me-1"></i>
+      <%= booking.listing.location %>, <%= booking.listing.country %>
+    </p>
+
+    <div class="wl-panel rounded-4 p-3 p-md-4">
+      <h2 class="h6 fw-bold mb-3">Trip details</h2>
+      <div class="row g-3">
+        <div class="col-sm-6">
+          <p class="small text-muted mb-1">Check-in</p>
+          <p class="fw-semibold mb-0"><%= new Date(booking.checkIn).toLocaleDateString() %></p>
+        </div>
+        <div class="col-sm-6">
+          <p class="small text-muted mb-1">Check-out</p>
+          <p class="fw-semibold mb-0"><%= new Date(booking.checkOut).toLocaleDateString() %></p>
+        </div>
+        <div class="col-sm-6">
+          <p class="small text-muted mb-1">Guests</p>
+          <p class="fw-semibold mb-0"><%= booking.guests %></p>
+        </div>
+        <div class="col-sm-6">
+          <p class="small text-muted mb-1">Status</p>
+          <span class="wl-badge"><%= booking.status %> · <%= booking.paymentStatus %></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="wl-booking-widget wl-booking-widget--sticky">
+      <h2 class="h6 fw-bold mb-3">Price summary</h2>
+      <div class="wl-price-row small mb-2">
+        <span>₹<%= booking.pricePerNight.toLocaleString('en-IN') %> × <%= booking.nights %> nights</span>
+        <span>₹<%= (booking.pricePerNight * booking.nights).toLocaleString('en-IN') %></span>
+      </div>
+      <div class="wl-price-row small mb-2">
+        <span>Service fee</span>
+        <span>₹<%= (booking.serviceFee || 0).toLocaleString('en-IN') %></span>
+      </div>
+      <hr />
+      <div class="wl-price-row fw-bold mb-3">
+        <span>Total</span>
+        <span>₹<%= booking.totalAmount.toLocaleString('en-IN') %></span>
+      </div>
+      <a href="/listings/<%= booking.listing._id %>" class="wl-btn wl-btn--ghost w-100">View listing</a>
+      <% if (booking.status !== 'cancelled') { %>
+      <form action="/bookings/<%= booking._id %>?_method=DELETE" method="post" class="mt-2" onsubmit="return confirm('Cancel this booking?')">
+        <button class="wl-btn wl-btn--ghost w-100">Cancel booking</button>
+      </form>
+      <% } %>
+    </div>
+  </div>
+</div>

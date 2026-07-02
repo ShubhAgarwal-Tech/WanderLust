@@ -1,0 +1,174 @@
+<% layout("/layouts/boilerplate") %>
+
+<section class="home-hero">
+  <div class="wl-container-wide home-hero__content wl-reveal is-visible">
+    <h1 class="wl-display">Find your next extraordinary stay</h1>
+    <p class="wl-lead">
+      Unique homes, iconic cities, and hidden gems — curated for travelers who expect more.
+    </p>
+
+    <form class="home-search" action="/listings" method="GET" id="home-search-form" role="search">
+      <input
+        type="search"
+        name="q"
+        id="home-search-input"
+        placeholder="Where to? Try Bali, Tokyo, Mountains…"
+        autocomplete="off"
+        aria-label="Search destinations"
+        aria-autocomplete="list"
+        aria-controls="home-search-suggestions"
+      />
+      <button type="submit" class="wl-btn wl-btn--primary">Search</button>
+      <ul class="home-search__suggestions" id="home-search-suggestions" role="listbox"></ul>
+    </form>
+
+    <div class="d-flex flex-wrap gap-2 mt-4">
+      <a href="/listings" class="wl-btn wl-btn--white">Explore all stays</a>
+      <% if (!currUser) { %>
+      <a href="/signup" class="wl-btn wl-btn--ghost">Create account</a>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<section class="home-section wl-container-wide">
+  <div class="home-section__header wl-reveal">
+    <div>
+      <h2 class="wl-h2">Browse by category</h2>
+      <p class="wl-lead mb-0">Tap a category to see matching stays instantly.</p>
+    </div>
+    <a href="/listings" class="wl-btn wl-btn--ghost d-none d-md-inline-flex">View all</a>
+  </div>
+  <div class="home-categories-grid">
+    <% categories.forEach((cat) => { %>
+    <a
+      href="/listings?category=<%= encodeURIComponent(cat.id) %>"
+      class="home-category-card wl-reveal"
+    >
+      <i class="fa-solid <%= cat.icon %>" aria-hidden="true"></i>
+      <span><%= cat.label %></span>
+    </a>
+    <% }) %>
+  </div>
+</section>
+
+<% if (featured && featured.length) { %>
+<section class="home-section home-section--subtle">
+  <div class="wl-container-wide">
+    <div class="home-section__header wl-reveal">
+      <div>
+        <h2 class="wl-h2">Featured stays</h2>
+        <p class="wl-lead mb-0">Top-rated properties guests love right now.</p>
+      </div>
+      <a href="/listings?sort=rating" class="wl-btn wl-btn--ghost">See top rated</a>
+    </div>
+    <div class="wl-listings-grid">
+      <% featured.forEach((listing) => { %>
+      <%- include("./includes/listing-card.ejs", { listing, favoriteIds, currentUrl: '/' }) %>
+      <% }) %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<section class="home-section">
+  <div class="wl-container-wide wl-reveal">
+    <h2 class="wl-h2 mb-4">Trending destinations</h2>
+    <div class="home-destinations">
+      <% const destinations = [
+        { name: 'Bali', img: 'https://images.unsplash.com/photo-1537996194121-07c42a12465f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80', fallback: 'https://images.unsplash.com/photo-1602391833977-358a52198938?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80', q: 'Bali', category: 'Amazing pools' },
+        { name: 'Tokyo', img: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80', fallback: 'https://images.unsplash.com/photo-1505069190533-da1c9af13346?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80', q: 'Tokyo', category: 'Iconic Cities' },
+        { name: 'Maldives', img: 'https://images.unsplash.com/photo-1439066615861-d1af74d74000?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80', fallback: 'https://images.unsplash.com/photo-1573843981267-be1999ff37cd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80', q: 'Maldives', category: 'Amazing pools' },
+        { name: 'Aspen', img: 'https://images.unsplash.com/photo-1449158743715-0a0908a71f9a?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80', fallback: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80', q: 'Aspen', category: 'Mountains' },
+        { name: 'Barcelona', img: 'https://images.unsplash.com/photo-1583422409513-289b089beaed?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80', fallback: 'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80', q: 'Barcelona', category: 'Iconic Cities' },
+      ]; %>
+      <% destinations.forEach((d) => { %>
+      <a
+        href="/listings?<%= d.category ? 'category=' + encodeURIComponent(d.category) + '&' : '' %>q=<%= encodeURIComponent(d.q) %>"
+        class="home-destination"
+      >
+        <div class="wl-img-wrap home-destination__media">
+          <img src="<%= d.img %>" alt="<%= d.name %>" class="wl-img" loading="lazy" decoding="async" data-title="<%= d.name %>" data-category="<%= d.category || 'Trending' %>" data-fallback="<%= d.fallback %>" />
+          <span class="wl-img-skeleton" aria-hidden="true"></span>
+        </div>
+        <div class="home-destination__overlay">
+          <h4><%= d.name %></h4>
+          <span class="home-destination__meta">Explore stays</span>
+        </div>
+      </a>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<% if (trending && trending.length) { %>
+<section class="home-section home-section--subtle">
+  <div class="wl-container-wide">
+    <div class="home-section__header wl-reveal">
+      <h2 class="wl-h2">Popular experiences</h2>
+    </div>
+    <div class="wl-listings-grid">
+      <% trending.forEach((listing) => { %>
+      <%- include("./includes/listing-card.ejs", { listing, favoriteIds, currentUrl: '/' }) %>
+      <% }) %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<section class="home-section">
+  <div class="wl-container-wide home-stats wl-reveal">
+    <div>
+      <div class="home-stats__number" data-count="500">500K+</div>
+      <div class="home-stats__label">Happy guests</div>
+    </div>
+    <div>
+      <div class="home-stats__number"><%= totalListings || '50' %>+</div>
+      <div class="home-stats__label">Curated stays</div>
+    </div>
+    <div>
+      <div class="home-stats__number">200+</div>
+      <div class="home-stats__label">Countries</div>
+    </div>
+    <div>
+      <div class="home-stats__number">4.8★</div>
+      <div class="home-stats__label">Average rating</div>
+    </div>
+  </div>
+</section>
+
+<section class="home-section home-section--subtle">
+  <div class="wl-container-wide">
+    <h2 class="wl-h2 text-center mb-4 wl-reveal">What travelers say</h2>
+    <div class="home-testimonials">
+      <blockquote class="home-testimonial wl-reveal">
+        <div class="home-testimonial__stars" aria-label="5 stars">★★★★★</div>
+        <p>"Booking was seamless and the apartment exceeded every photo. WanderLust is my go-to now."</p>
+        <footer class="text-muted small mt-2">— Priya, Mumbai</footer>
+      </blockquote>
+      <blockquote class="home-testimonial wl-reveal">
+        <div class="home-testimonial__stars" aria-label="5 stars">★★★★★</div>
+        <p>"Category filters actually work. Found a mountain cabin in minutes."</p>
+        <footer class="text-muted small mt-2">— James, London</footer>
+      </blockquote>
+      <blockquote class="home-testimonial wl-reveal">
+        <div class="home-testimonial__stars" aria-label="5 stars">★★★★★</div>
+        <p>"The map on the listing page made choosing the neighborhood so easy."</p>
+        <footer class="text-muted small mt-2">— Aisha, Dubai</footer>
+      </blockquote>
+    </div>
+  </div>
+</section>
+
+<section class="wl-container-wide">
+  <div class="home-cta wl-reveal">
+    <h2 class="wl-h2">Ready to wander?</h2>
+    <p>Join thousands of travelers discovering unique stays every day.</p>
+    <div class="d-flex flex-wrap gap-2 justify-content-center">
+      <a href="/listings" class="wl-btn wl-btn--white">Browse listings</a>
+      <% if (!currUser) { %>
+      <a href="/signup" class="wl-btn wl-btn--ghost">Get started</a>
+      <% } %>
+    </div>
+  </div>
+</section>

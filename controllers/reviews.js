@@ -3,13 +3,19 @@ const Review = require("../models/review.js");
 
 module.exports.createReview = async (req, res) => {
   let listing = await Listing.findById(req.params.id);
+  if (!listing) {
+    req.flash("error", "Listing not found.");
+    return res.redirect("/listings");
+  }
   let newReview = new Review(req.body.review);
   newReview.author = req.user._id;
   listing.reviews.push(newReview);
   await newReview.save();
   await listing.save();
   req.flash("success", "New Review Created!");
-  //console.log("new review saved");
+  if (req.headers.accept?.includes("application/json")) {
+    return res.json({ ok: true, redirect: `/listings/${listing._id}` });
+  }
   res.redirect(`/listings/${listing._id}`);
 };
 
@@ -18,5 +24,8 @@ module.exports.destroyReview = async (req, res) => {
   await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
   await Review.findByIdAndDelete(reviewId);
   req.flash("success", "Review Deleted!");
+  if (req.headers.accept?.includes("application/json")) {
+    return res.json({ ok: true, redirect: `/listings/${id}` });
+  }
   res.redirect(`/listings/${id}`);
 };

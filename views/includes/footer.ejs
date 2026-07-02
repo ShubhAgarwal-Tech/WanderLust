@@ -1,15 +1,44 @@
-<footer>
-    <div class="f-info">
-        <div class="f-info-socials">
-            <i class="fa-brands fa-square-facebook"></i>
-            <i class="fa-brands fa-square-instagram"></i>
-            <i class="fa-brands fa-square-linkedin"></i>
+<footer class="wl-footer" role="contentinfo">
+  <div class="wl-container">
+    <div class="wl-footer__grid">
+      <div>
+        <div class="wl-footer__brand">WanderLust</div>
+        <p class="text-muted mb-0 wl-footer__intro">
+          Curated stays and experiences for modern travelers. Book with confidence.
+        </p>
+        <div class="wl-footer__socials">
+          <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
         </div>
-        <div class="f-info-brand">&copy; WanderLust Private Limited</div>
-        <div class="f-info-links">
-            <a href="/privacy">Privacy</a>
-            &nbsp;&nbsp;
-            <a href="/terms">Terms</a>
-        </div>
+      </div>
+      <div class="wl-footer__col">
+        <h4>Explore</h4>
+        <a href="/listings">All listings</a>
+        <a href="/listings?category=Mountains">Mountains</a>
+        <a href="/listings?category=Iconic%20Cities">Iconic cities</a>
+        <a href="/listings?category=Amazing%20pools">Pools</a>
+      </div>
+      <div class="wl-footer__col">
+        <h4>Hosting</h4>
+        <a href="/listings/new">List your property</a>
+        <a href="/listings">Browse hosts</a>
+      </div>
+      <div class="wl-footer__col">
+        <h4>Newsletter</h4>
+        <p class="text-muted small mb-0">Get deals and inspiration in your inbox.</p>
+        <form class="wl-footer__newsletter" onsubmit="return false;" aria-label="Newsletter signup">
+          <input type="email" class="wl-input" placeholder="Email address" aria-label="Email" />
+          <button type="button" class="wl-btn wl-btn--primary wl-btn--sm">Join</button>
+        </form>
+      </div>
     </div>
+    <div class="wl-footer__bottom">
+      <span>&copy; <%= new Date().getFullYear() %> WanderLust Private Limited</span>
+      <span>
+        <a href="/listings" class="text-muted text-decoration-none me-3">Support</a>
+        <a href="/" class="text-muted text-decoration-none">Privacy</a>
+      </span>
+    </div>
+  </div>
 </footer>

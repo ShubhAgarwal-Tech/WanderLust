@@ -1,0 +1,234 @@
+/* Global responsive polish */
+
+@media (max-width: 767px) {
+  :root {
+    --wl-nav-height: 64px;
+  }
+
+  .wl-navbar__brand span {
+    font-size: 1.05rem;
+  }
+
+  .wl-listings-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .wl-filters {
+    position: static;
+    margin-bottom: 0.5rem;
+  }
+
+  .wl-listings-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 160px), 1fr));
+    gap: 1.25rem 0.75rem;
+  }
+
+  .wl-categories {
+    gap: 1.25rem;
+    padding: 0.75rem 0;
+    margin: 0 calc(-1 * clamp(0.5rem, 2vw, 1rem));
+    padding-inline: clamp(0.5rem, 2vw, 1rem);
+  }
+
+  .wl-category {
+    font-size: 0.7rem;
+    min-width: 4.5rem;
+  }
+
+  .wl-booking-widget--sticky {
+    position: static !important;
+  }
+
+  .home-hero {
+    min-height: auto;
+    padding: 5rem 0 3rem;
+  }
+
+  .home-search {
+    flex-direction: column;
+    border-radius: var(--wl-radius-lg);
+    padding: 0.75rem;
+  }
+
+  .home-search input {
+    width: 100%;
+    border-radius: var(--wl-radius);
+  }
+
+  .home-search .wl-btn {
+    width: 100%;
+  }
+
+  .home-section__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .home-categories-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .home-destination {
+    flex: 0 0 min(160px, 45vw);
+  }
+
+  .wl-footer__newsletter {
+    flex-direction: column;
+  }
+
+  .wl-footer__bottom {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .wl-gallery-grid .wl-gallery-main {
+    height: min(62vw, 300px);
+  }
+
+  .show-img {
+    height: min(45vh, 320px) !important;
+  }
+
+  .wl-map,
+  .wl-map--lg {
+    height: min(50vh, 320px);
+  }
+
+  .main-content .container-layout {
+    width: min(100% - 1rem, var(--wl-container));
+    padding-top: 0.85rem;
+  }
+
+  .wl-booking-widget {
+    border-radius: var(--wl-radius);
+  }
+
+  .booking-list-card .wl-img-wrap {
+    width: 100% !important;
+    max-width: 100%;
+  }
+
+  .wl-filters__row {
+    grid-template-columns: 1fr;
+  }
+
+  .wl-listings-toolbar {
+    align-items: flex-start;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .wl-listings-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1400px) {
+  .wl-listings-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
+/* Prevent horizontal scroll from wide children */
+.wl-container-wide,
+.container-fluid-layout,
+.wl-listings-toolbar,
+.row,
+.table-responsive,
+.modal,
+.offcanvas {
+  max-width: 100%;
+}
+
+.row {
+  --bs-gutter-x: clamp(1rem, 3vw, 1.5rem);
+}
+
+.table {
+  overflow-wrap: anywhere;
+}
+
+.modal-dialog {
+  margin: clamp(0.5rem, 3vw, 1.75rem);
+  max-width: min(100% - 1rem, var(--bs-modal-width, 500px));
+}
+
+.modal-content {
+  max-height: calc(100dvh - 1rem);
+  overflow: hidden;
+}
+
+.modal-body {
+  overflow-y: auto;
+}
+
+.form-control,
+.form-select,
+.wl-input,
+.wl-select {
+  min-width: 0;
+}
+
+@media (max-width: 420px) {
+  .wl-listings-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .wl-navbar__inner {
+    gap: 0.35rem;
+  }
+
+  .wl-navbar__brand span {
+    max-width: 8rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .wl-nav-menu-btn {
+    padding-inline: 0.55rem;
+  }
+
+  .wl-display {
+    font-size: 1.8rem;
+  }
+
+  .wl-h2,
+  .h3 {
+    font-size: 1.25rem;
+  }
+
+  .wl-badge {
+    max-width: 100%;
+    white-space: normal;
+  }
+}
+
+/* Touch targets */
+@media (pointer: coarse) {
+  .wl-nav-icon,
+  .listing-card__favorite,
+  .wl-category {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .wl-category {
+    min-width: auto;
+    padding: 0.25rem;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .wl-reveal,
+  .listing-card__media img,
+  .wl-btn,
+  html.theme-transition * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

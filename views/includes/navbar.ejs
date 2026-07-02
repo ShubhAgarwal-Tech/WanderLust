@@ -1,63 +1,77 @@
-<style>
-  .btn-search {
-    background-color: #fe424d;
-    color: #fff;
-    border-radius: 25px;
-    padding: 0 1rem 0 1rem;
-  }
-  .btn-search:hover {
-    background-color: #fe424d;
-    color: #fff;
-  }
-  .btn-search i {
-    display: inline;
-    margin-right: 0.4rem;
-  }
-  .search-input {
-    border-radius: 25px;
-    padding: 0.5rem 3rem 0.5rem 3rem;
-    font-size: 1rem;
-  }
-</style>
+<header class="wl-navbar" id="wl-navbar" role="banner">
+  <div class="wl-container wl-navbar__inner">
+    <a class="wl-navbar__brand" href="/" aria-label="WanderLust home">
+      <i class="fa-solid fa-compass" aria-hidden="true"></i>
+      <span>WanderLust</span>
+    </a>
 
-<nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="/listings"
-      ><i class="fa-solid fa-earth-americas"></i
-    ></a>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarNavAltMarkup"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-        <a class="nav-link" href="/listings">Explore</a>
+    <form class="wl-navbar__search" action="/listings" method="GET" role="search">
+      <div class="wl-search-pill">
+        <input
+          type="search"
+          name="q"
+          placeholder="Search destinations"
+          aria-label="Search destinations"
+          value="<%= typeof q !== 'undefined' ? q : '' %>"
+          autocomplete="off"
+        />
+        <button type="submit" aria-label="Search">
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        </button>
       </div>
-      <div class="navbar-nav ms-auto">
-        <form class="d-flex" role="search">
-          <input
-            class="form-control me-2 search-input"
-            type="search"
-            placeholder="Search  destinations"
-          />
-          <button class="btn btn-search" type="submit">
-            <i class="fa-solid fa-magnifying-glass"></i>Search
-          </button>
-        </form>
-      </div>
-      <div class="navbar-nav ms-auto">
-        <a class="nav-link" href="/listings/new">Airbnb your Home</a>
-        <%if(!currUser){%>
-        <a class="nav-link" href="/signup"><b>Sign up</b></a>
-        <a class="nav-link" href="/login"><b>Login</b></a>
-        <%}%> <%if(currUser){%>
-        <a class="nav-link" href="/logout"><b>Logout</b></a>
-        <%}%>
-      </div>
+    </form>
+
+    <div class="wl-navbar__actions">
+      <button type="button" class="wl-nav-icon" data-theme-toggle aria-label="Toggle theme">
+        <i class="fa-solid fa-moon" aria-hidden="true"></i>
+      </button>
+      <a href="/listings" class="d-none d-md-inline wl-btn wl-btn--ghost wl-btn--sm">Explore</a>
+
+      <% if (currUser) { %>
+      <a href="/favorites" class="wl-nav-icon" aria-label="Wishlist" title="Wishlist">
+        <i class="fa-regular fa-heart" aria-hidden="true"></i>
+      </a>
+      <a href="/bookings" class="wl-nav-icon d-none d-md-grid" aria-label="Bookings" title="Bookings">
+        <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+      </a>
+      <% } else { %>
+      <a href="/login" class="wl-nav-icon" aria-label="Wishlist" title="Sign in to save favorites">
+        <i class="fa-regular fa-heart" aria-hidden="true"></i>
+      </a>
+      <% } %>
+
+      <button
+        type="button"
+        class="wl-nav-menu-btn"
+        id="wl-nav-toggle"
+        aria-haspopup="true"
+        aria-expanded="false"
+        aria-controls="wl-mobile-nav"
+        aria-label="Open menu"
+      >
+        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        <i class="fa-regular fa-circle-user" aria-hidden="true"></i>
+      </button>
     </div>
   </div>
-</nav>
+
+  <nav class="wl-mobile-nav" id="wl-mobile-nav" aria-label="Account navigation">
+    <form action="/listings" method="GET" class="mb-3 d-md-none">
+      <div class="wl-search-pill">
+        <input type="search" name="q" placeholder="Search" aria-label="Search" />
+        <button type="submit" aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
+      </div>
+    </form>
+    <a href="/">Home</a>
+    <a href="/listings">Explore stays</a>
+    <% if (currUser) { %>
+    <a href="/listings/new">Host your home</a>
+    <a href="/favorites">Wishlist</a>
+    <a href="/bookings">My bookings</a>
+    <a href="/logout">Log out</a>
+    <% } else { %>
+    <a href="/signup">Sign up</a>
+    <a href="/login">Log in</a>
+    <% } %>
+  </nav>
+</header>

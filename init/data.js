@@ -2,11 +2,25 @@ const sampleListings = [
   {
     title: "Cozy Beachfront Cottage",
     description:
-      "Escape to this charming beachfront cottage for a relaxing getaway. Enjoy stunning ocean views and easy access to the beach.",
+      "Wake up to ocean breeze and soft sunrise light in this cozy beachfront cottage.\n\nWhat you’ll love:\n- Direct beach access and a private patio\n- Fully equipped kitchen for long stays\n- Fast Wi‑Fi and a dedicated work nook\n\nPerfect for couples, small families, or anyone who wants an easy, slow coastal weekend.",
     image: {
       filename: "listingimage",
       url: "https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHRyYXZlbHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
     },
+    images: [
+      {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1505693314120-0d443867891c?auto=format&fit=crop&w=1200&q=60",
+      },
+      {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=60",
+      },
+      {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?auto=format&fit=crop&w=1200&q=60",
+      },
+    ],
     price: 1500,
     location: "Malibu",
     country: "United States",
@@ -14,11 +28,25 @@ const sampleListings = [
   {
     title: "Modern Loft in Downtown",
     description:
-      "Stay in the heart of the city in this stylish loft apartment. Perfect for urban explorers!",
+      "A bright, modern loft in the center of downtown—walk to cafés, museums, and nightlife.\n\nHighlights:\n- Floor-to-ceiling windows with skyline views\n- Self check-in and secure building entry\n- Minimalist design, comfy bed, and strong AC\n\nGreat for city breaks and business trips.",
     image: {
       filename: "listingimage",
       url: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHRyYXZlbHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
     },
+    images: [
+      {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=1200&q=60",
+      },
+      {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=60",
+      },
+      {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1200&q=60",
+      },
+    ],
     price: 1200,
     location: "New York City",
     country: "United States",
@@ -290,14 +318,80 @@ const sampleListings = [
   {
     title: "Modern Apartment in Tokyo",
     description:
-      "Explore the vibrant city of Tokyo from this modern and centrally located apartment.",
+      "Explore Tokyo from a modern, centrally located apartment with easy metro access.\n\nIncludes:\n- Clean, compact design (Tokyo-style)\n- Quiet nights with blackout curtains\n- Quick access to shopping streets and food markets\n\nGreat for first-time visitors and short city stays.",
     image: {
       filename: "listingimage",
       url: "https://images.unsplash.com/photo-1480796927426-f609979314bd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fHRva3lvfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
     },
+    images: [
+      {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1528909514045-2fa4ac7a08ba?auto=format&fit=crop&w=1200&q=60",
+      },
+      {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1554995207-c18c203602cb?auto=format&fit=crop&w=1200&q=60",
+      },
+      {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=60",
+      },
+    ],
     price: 2000,
     location: "Tokyo",
     country: "Japan",
+  },
+  {
+    title: "Boutique Hotel Suite with Rooftop Pool",
+    description:
+      "A boutique hotel-style suite with rooftop pool access and a dedicated lounge.\n\nDetails:\n- Premium bedding and soundproof windows\n- Rooftop pool + gym\n- Fast Wi‑Fi and a workspace\n\nPerfect for couples and weekend city escapes.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=900&q=60",
+    },
+    images: [
+      {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1560067174-8943bd0b3c40?auto=format&fit=crop&w=1200&q=60",
+      },
+      {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1549187774-b4e9b0445b41?auto=format&fit=crop&w=1200&q=60",
+      },
+      {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&w=1200&q=60",
+      },
+    ],
+    price: 4200,
+    location: "Barcelona",
+    country: "Spain",
+  },
+  {
+    title: "Heritage Haveli Stay (Courtyard + Breakfast)",
+    description:
+      "Experience a traditional heritage haveli with a peaceful courtyard and complimentary breakfast.\n\nIncludes:\n- Large rooms with classic decor\n- Courtyard seating for evenings\n- Helpful staff and easy local transport\n\nA calm, authentic stay close to major attractions.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=60",
+    },
+    images: [
+      {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&w=1200&q=60",
+      },
+      {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1505693314120-0d443867891c?auto=format&fit=crop&w=1200&q=60",
+      },
+      {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?auto=format&fit=crop&w=1200&q=60",
+      },
+    ],
+    price: 2800,
+    location: "Jaipur",
+    country: "India",
   },
   {
     title: "Lakefront Cabin in New Hampshire",

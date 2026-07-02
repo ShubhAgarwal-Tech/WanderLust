@@ -1,13 +1,13 @@
 <% layout("/layouts/boilerplate")%>
-<div class="row mt-3">
-  <div class="col-8 offset-2">
-    <h3>Create a New Listing</h3>
-    <br />
+<div class="row justify-content-center mt-3 mb-5">
+  <div class="col-lg-8 col-xl-7">
+    <h1 class="h3 fw-bold mb-1">Create a new listing</h1>
+    <p class="text-muted mb-4">Add the essentials. If no image is uploaded, WanderLust will use a matching category fallback.</p>
     <form
       action="/listings"
       method="post"
       novalidate
-      class="needs-validation"
+      class="needs-validation wl-panel rounded-4 p-3 p-md-4"
       enctype="multipart/form-data"
     >
       <div class="mb-3">
@@ -25,22 +25,73 @@
       <div class="mb-3">
         <label for="description" class="form-label">Description</label>
         <textarea
+          id="description"
           name="listing[description]"
           placeholder="Enter description"
           class="form-control"
+          rows="5"
+          minlength="20"
           required
         ></textarea>
         <div class="invalid-feedback">Please enter a short description</div>
       </div>
       <div class="mb-3">
-        <label for="image" class="form-label">Upload Image</label>
-        <input name="listing[image]" type="file" class="form-control" />
-        required
+        <label for="category" class="form-label">Category</label>
+        <select name="listing[category]" id="category" class="form-select" required>
+          <% (categories || [{ id: 'Trending', label: 'Trending' }]).forEach((cat) => { %>
+          <option value="<%= cat.id %>"><%= cat.label %></option>
+          <% }) %>
+        </select>
+        <div class="invalid-feedback">Please select a category</div>
+      </div>
+      <div class="mb-3">
+        <label for="propertyType" class="form-label">Property type</label>
+        <select name="listing[propertyType]" id="propertyType" class="form-select">
+          <% (propertyTypes || []).forEach((pt) => { %>
+          <option value="<%= pt %>"><%= pt %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="maxGuests" class="form-label">Max guests</label>
+        <input type="number" name="listing[maxGuests]" id="maxGuests" class="form-control" min="1" max="16" value="2" required />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Amenities</label>
+        <div class="row row-cols-1 row-cols-sm-2 g-2">
+          <% (amenitiesList || []).forEach((am) => { %>
+          <div class="col">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="listing[amenities]" value="<%= am %>" id="am-<%= am.replace(/\s/g,'') %>" />
+              <label class="form-check-label" for="am-<%= am.replace(/\s/g,'') %>"><%= am %></label>
+            </div>
+          </div>
+          <% }) %>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="image" class="form-label">Upload Cover Image</label>
+        <input name="listing[image]" id="image" type="file" class="form-control" accept="image/*" />
+      </div>
+      <div class="mb-3">
+        <label for="images" class="form-label">Upload More Images (hotel/rooms/etc)</label>
+        <input
+          name="listing[images]"
+          id="images"
+          type="file"
+          class="form-control"
+          multiple
+          accept="image/*"
+        />
       </div>
       <div class="mb-3">
         <label for="price" class="form-label">Price</label>
         <input
           name="listing[price]"
+          id="price"
+          type="number"
+          min="0"
+          step="1"
           placeholder="Enter price"
           class="form-control"
           required
@@ -70,8 +121,7 @@
         <div class="invalid-feedback">Location should be valid</div>
       </div>
 
-      <button class="btn btn-dark add-btn mt-3">Add</button>
-      <br /><br />
+      <button class="wl-btn wl-btn--primary add-btn mt-3" type="submit">Add listing</button>
     </form>
   </div>
 </div>

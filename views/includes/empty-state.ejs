@@ -1,0 +1,18 @@
+<div class="wl-empty wl-reveal is-visible" role="status">
+  <div class="wl-empty__icon" aria-hidden="true">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </div>
+  <h3>No stays found</h3>
+  <p>Try adjusting your filters or explore popular categories below.</p>
+  <div class="wl-empty__actions">
+    <a href="/listings" class="wl-btn wl-btn--primary">Clear filters</a>
+    <a href="/" class="wl-btn wl-btn--ghost">Back to home</a>
+  </div>
+  <div class="mt-4 d-flex flex-wrap gap-2 justify-content-center">
+    <% (categories || []).slice(1, 5).forEach((cat) => { %>
+    <a href="/listings?category=<%= encodeURIComponent(cat.id) %>" class="wl-badge text-decoration-none">
+      <%= cat.label %>
+    </a>
+    <% }) %>
+  </div>
+</div>

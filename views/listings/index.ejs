@@ -1,124 +1,151 @@
-<% layout("/layouts/boilerplate")%>
+<% layout("/layouts/boilerplate") %>
 
-<style>
-  #filters {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-  .filter {
-    text-align: center;
-    margin-right: 3rem;
-    margin-top: 2rem;
-    opacity: 0.7;
-  }
-  .filter:hover {
-    opacity: 1;
-    cursor: pointer;
-  }
-  .filter p {
-    font-size: 0.8rem;
-  }
-  .tax-info {
-    display: none;
-  }
-  .tax-toggle{
-    border: 1px solid black;
-    border-radius: 1rem;
-    height: 3rem;
-    padding: 1rem;
-    margin-left: 7rem;
-    display: flex;
-    align-items: center;
-  }
-</style>
-
-<div id="filters">
-  <div class="filter">
-    <div><i class="fa-solid fa-fire"></i></div>
-    <p>Trending</p>
-  </div>
-  <div class="filter">
-    <div><i class="fa-solid fa-bed"></i></div>
-    <p>Rooms</p>
-  </div>
-  <div class="filter">
-    <div><i class="fa-solid fa-mountain-city"></i></div>
-    <p>Iconic Cities</p>
-  </div>
-  <div class="filter">
-    <div><i class="fa-solid fa-mountain"></i></div>
-    <p>Mountains</p>
-  </div>
-  <div class="filter">
-    <div><i class="fa-brands fa-fort-awesome"></i></div>
-    <p>Castles</p>
-  </div>
-  <div class="filter">
-    <div><i class="fa-solid fa-person-swimming"></i></div>
-    <p>Amazing pools</p>
-  </div>
-  <div class="filter">
-    <div><i class="fa-solid fa-campground"></i></div>
-    <p>Camping</p>
-  </div>
-  <div class="filter">
-    <div><i class="fa-solid fa-tractor"></i></div>
-    <p>Farm</p>
-  </div>
-  <div class="filter">
-    <div><i class="fa-solid fa-snowman"></i></div>
-    <p>Arctic</p>
+<div class="wl-container-wide wl-page-pad" data-page="listings">
+  <div class="wl-categories" id="category-bar" role="tablist" aria-label="Categories">
+    <% categories.forEach((cat) => { %>
+    <% const isActive = cat.id === 'Trending' ? (!category || category === 'Trending') : category === cat.id; %>
+    <a
+      href="/listings?category=<%= encodeURIComponent(cat.id) %><%= q ? '&q=' + encodeURIComponent(q) : '' %>"
+      class="wl-category <%= isActive ? 'is-active' : '' %>"
+      data-category="<%= cat.id %>"
+      role="tab"
+      aria-selected="<%= isActive %>"
+    >
+      <i class="fa-solid <%= cat.icon %>" aria-hidden="true"></i>
+      <%= cat.label %>
+    </a>
+    <% }) %>
   </div>
 
-  <div class="tax-toggle">
-    <div class="form-check-reverse form-switch">
-      <input
-        class="form-check-input"
-        type="checkbox"
-        role="switch"
-        id="switchCheckDefault"
-      />
-      <label class="form-check-label" for="switchCheckDefault"
-        >Display Total after Taxes</label
-      >
-    </div>
-  </div>
-</div>
-<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
-  <%for(let listing of listings){%>
-  <a href="/listings/<%=listing._id%>" class="listing-link">
-    <div class="card col listing-card">
-      <img
-        src="<%=listing.image.url%>"
-        class="card-img-top"
-        alt="listing_image"
-        style="height: 20rem"
-      />
-      <div class="card-img-overlay"></div>
-      <div class="card-body">
-        <p class="card-text">
-          <b><%=listing.title%></b>
-          <br />
-          &#8377;<%=listing.price.toLocaleString("en-IN")%>/Night
-          <span class="tax-info">&nbsp;+<i>18% GST</i></span>
+  <div class="wl-listings-layout mt-3">
+    <aside class="wl-filters" aria-label="Filters">
+      <form id="listings-filter-form" method="GET" action="/listings">
+        <input type="hidden" name="category" id="filter-category" value="<%= category || '' %>" />
+
+        <div class="wl-filters__group">
+          <label for="filter-q">Search</label>
+          <input
+            type="search"
+            class="wl-input"
+            name="q"
+            id="filter-q"
+            value="<%= q || '' %>"
+            placeholder="Title, location, keyword…"
+          />
+        </div>
+
+        <div class="wl-filters__group">
+          <label>Price per night (₹)</label>
+          <div class="wl-filters__row">
+            <input type="number" class="wl-input" name="minPrice" placeholder="Min" value="<%= typeof minPrice !== 'undefined' ? minPrice : '' %>" min="0" />
+            <input type="number" class="wl-input" name="maxPrice" placeholder="Max" value="<%= typeof maxPrice !== 'undefined' ? maxPrice : '' %>" min="0" />
+          </div>
+        </div>
+
+        <div class="wl-filters__group">
+          <label for="filter-guests">Guests</label>
+          <select class="wl-select" name="guests" id="filter-guests">
+            <option value="">Any</option>
+            <% [1,2,3,4,5,6,8].forEach((g) => { %>
+            <option value="<%= g %>" <%= String(guests) === String(g) ? 'selected' : '' %>><%= g %>+ guests</option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="wl-filters__group">
+          <label for="filter-rating">Minimum rating</label>
+          <select class="wl-select" name="minRating" id="filter-rating">
+            <option value="">Any</option>
+            <% [3, 3.5, 4, 4.5].forEach((r) => { %>
+            <option value="<%= r %>" <%= String(minRating) === String(r) ? 'selected' : '' %>><%= r %>+ stars</option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="wl-filters__group">
+          <label for="filter-type">Property type</label>
+          <select class="wl-select" name="propertyType" id="filter-type">
+            <option value="">Any type</option>
+            <% propertyTypes.forEach((pt) => { %>
+            <option value="<%= pt %>" <%= propertyType === pt ? 'selected' : '' %>><%= pt %></option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="wl-filters__group">
+          <label>Amenities</label>
+          <div class="wl-filter-chips" id="amenity-chips">
+            <% amenitiesList.forEach((am) => { %>
+            <% const selected = amenities && (Array.isArray(amenities) ? amenities.includes(am) : String(amenities).split(',').includes(am)); %>
+            <button
+              type="button"
+              class="wl-filter-chip <%= selected ? 'is-selected' : '' %>"
+              data-amenity="<%= am %>"
+            >
+              <%= am %>
+            </button>
+            <% }) %>
+          </div>
+          <input type="hidden" name="amenities" id="filter-amenities" value="<%= Array.isArray(amenities) ? amenities.join(',') : (amenities || '') %>" />
+        </div>
+
+        <div class="wl-filters__group">
+          <label for="filter-sort">Sort by</label>
+          <select class="wl-select" name="sort" id="filter-sort">
+            <% sortOptions.forEach((opt) => { %>
+            <option value="<%= opt.id %>" <%= (sort || 'recommended') === opt.id ? 'selected' : '' %>><%= opt.label %></option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="d-flex flex-column gap-2">
+          <button type="submit" class="wl-btn wl-btn--primary w-100">Apply filters</button>
+          <a href="/listings" class="wl-btn wl-btn--ghost w-100 text-center">Clear all</a>
+        </div>
+      </form>
+    </aside>
+
+    <section aria-label="Listings results">
+      <div class="wl-listings-toolbar">
+        <p class="mb-0 text-muted">
+          <strong id="results-count"><%= totalCount %></strong> stay<%= totalCount === 1 ? '' : 's' %>
+          <% if (q) { %> matching "<%= q %>"<% } %>
+          <% if (category && category !== 'Trending') { %> in <%= category %><% } %>
         </p>
+        <div class="form-check form-switch mb-0">
+          <input class="form-check-input" type="checkbox" id="tax-toggle" />
+          <label class="form-check-label small" for="tax-toggle">Show price + 18% GST</label>
+        </div>
       </div>
-    </div>
-  </a>
-  <%}%>
+
+      <div id="listings-grid" class="wl-listings-grid">
+        <% if (listings.length === 0) { %>
+        <div class="wl-grid-full">
+          <%- include("../includes/empty-state.ejs", { categories }) %>
+        </div>
+        <% } else { %>
+        <% listings.forEach((listing) => { %>
+        <%- include("../includes/listing-card.ejs", { listing, favoriteIds, currentUrl }) %>
+        <% }) %>
+        <% } %>
+      </div>
+
+      <% if (totalPages > 1) { %>
+      <% const qsBase = currentUrl.includes('?') ? currentUrl.split('?')[1] : ''; %>
+      <nav class="mt-4 wl-mobile-actions justify-content-center" aria-label="Pagination">
+        <% if (page > 1) { %>
+        <% const prevQs = new URLSearchParams(qsBase); prevQs.set('page', String(page - 1)); %>
+        <a class="wl-btn wl-btn--ghost" href="/listings?<%= prevQs.toString() %>">Previous</a>
+        <% } %>
+        <span class="align-self-center text-muted small">Page <%= page %> of <%= totalPages %></span>
+        <% if (page < totalPages) { %>
+        <% const nextQs = new URLSearchParams(qsBase); nextQs.set('page', String(page + 1)); %>
+        <a class="wl-btn wl-btn--ghost" href="/listings?<%= nextQs.toString() %>">Next</a>
+        <% } %>
+      </nav>
+      <% } %>
+    </section>
+  </div>
 </div>
 
-<script>
-  let taxSwitch = document.getElementById("switchCheckDefault");
-  taxSwitch.addEventListener("click", () => {
-    let taxInfo = document.getElementsByClassName("tax-info");
-    for (info of taxInfo) {
-      if (info.style.display != "inline") {
-        info.style.display = "inline";
-      } else {
-        info.style.display = "none";
-      }
-    }
-  });
-</script>
+<span class="tax-info d-none"> + GST</span>

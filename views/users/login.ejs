@@ -1,34 +1,24 @@
 <% layout("/layouts/boilerplate")%>
 
-<div class="row mt-3">
-  <h1 class="col-6 offset-3">Login on WanderLust</h1>
-  <div class="col-6 offset-3">
-    <br />
-    <form action="/login" method="post" class="needs-validation" novalidate>
-      <div class="mb-3">
-        <label for="username" class="form-label">Username</label>
-        <input
-          type="text"
-          name="username"
-          placeholder="Enter username"
-          class="form-control"
-          id="username"
-          required
-        />
-      </div>
-
-      <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
-        <input
-          type="password"
-          name="password"
-          placeholder="Enter password"
-          class="form-control"
-          id="password"
-          required
-        />
-      </div>
-      <button class="btn btn-success">Login</button>
-    </form>
+<div class="row justify-content-center mt-4 mb-5">
+  <div class="col-12 col-md-6 col-lg-5">
+    <div class="wl-panel rounded-4 p-4 p-md-5 shadow-sm">
+      <h1 class="h3 fw-bold mb-1">Welcome back</h1>
+      <p class="text-muted mb-4">Log in to book stays and save wishlists.</p>
+      <form action="/login" method="post" class="needs-validation" novalidate>
+        <div class="mb-3">
+          <label for="username" class="form-label">Username</label>
+          <input type="text" name="username" class="wl-input" id="username" required />
+        </div>
+        <div class="mb-4">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" name="password" class="wl-input" id="password" required />
+        </div>
+        <button class="wl-btn wl-btn--primary w-100">Log in</button>
+      </form>
+      <p class="text-center text-muted small mt-3 mb-0">
+        New here? <a href="/signup">Create an account</a>
+      </p>
+    </div>
   </div>
 </div>

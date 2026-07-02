@@ -1,0 +1,25 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="wl-container-wide py-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div>
+      <h1 class="h3 fw-bold mb-1">Your favorites</h1>
+      <p class="text-muted mb-0">
+        <span data-favorites-count><%= listings ? listings.length : 0 %></span>
+        saved stay<%= listings && listings.length === 1 ? '' : 's' %> for your next trip.
+      </p>
+    </div>
+    <a href="/listings" class="wl-btn wl-btn--ghost wl-btn--sm">Explore stays</a>
+  </div>
+
+  <% if (!listings || listings.length === 0) { %>
+  <%- include("../includes/empty-state.ejs", { categories }) %>
+  <% } else { %>
+  <div class="wl-listings-grid" data-favorites-grid>
+    <% const favoriteIds = listings.map((listing) => listing._id); %>
+    <% for (let listing of listings) { %>
+    <%- include("../includes/listing-card.ejs", { listing, favoriteIds, currentUrl: '/favorites' }) %>
+    <% } %>
+  </div>
+  <% } %>
+</div>
