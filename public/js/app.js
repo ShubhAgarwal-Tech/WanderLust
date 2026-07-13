@@ -18,12 +18,7 @@
     let menuIsOpen = false;
 
     const lockBodyScroll = () => {
-      lockedScrollY = window.scrollY || document.documentElement.scrollTop || 0;
-      document.body.style.position = "fixed";
-      document.body.style.top = `-${lockedScrollY}px`;
-      document.body.style.left = "0";
-      document.body.style.right = "0";
-      document.body.style.width = "100%";
+      lockedScrollY = getScrollY();
       document.body.classList.add("nav-open");
       menuIsOpen = true;
     };
@@ -33,13 +28,7 @@
       const scrollY = lockedScrollY;
       menuIsOpen = false;
       document.body.classList.remove("nav-open");
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.left = "";
-      document.body.style.right = "";
-      document.body.style.width = "";
-      document.documentElement.scrollTop = scrollY;
-      document.body.scrollTop = scrollY;
+      restoreScroll(scrollY);
     };
 
     const closeMenu = () => {
@@ -80,6 +69,18 @@
     mobileNav.addEventListener("click", (event) => {
       if (event.target.closest("a, button[type='submit']")) closeMenu();
     });
+
+    document.addEventListener(
+      "pointerdown",
+      (event) => {
+        if (!mobileNav.classList.contains("is-open")) return;
+        if (event.target.closest("#wl-mobile-nav, #wl-nav-toggle")) return;
+        event.preventDefault();
+        event.stopPropagation();
+        closeMenu();
+      },
+      true
+    );
 
     navBackdrop?.addEventListener("click", (event) => {
       event.preventDefault();
@@ -122,7 +123,95 @@
 
   const main = document.getElementById("main-content");
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const ENABLE_PJAX = true;
   let navAbort = null;
+  let suppressScrollSave = false;
+
+  if ("scrollRestoration" in window.history) {
+    window.history.scrollRestoration = ENABLE_PJAX ? "manual" : "auto";
+  }
+
+  function makeHistoryKey() {
+    if (window.crypto?.randomUUID) return window.crypto.randomUUID();
+    return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  }
+
+  function currentHistoryState() {
+    return window.history.state && typeof window.history.state === "object"
+      ? window.history.state
+      : {};
+  }
+
+  function currentHistoryKey() {
+    return currentHistoryState().wlKey;
+  }
+
+  const scrollKey = (key = currentHistoryKey()) => `wl-scroll:${key || "initial"}`;
+
+  function getScrollY() {
+    return window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+  }
+
+  function saveCurrentScroll(options = {}) {
+    const { force = false } = options;
+    if (!force && suppressScrollSave) return;
+    const y = getScrollY();
+    const state = currentHistoryState();
+    const key = state.wlKey || makeHistoryKey();
+    try {
+      sessionStorage.setItem(scrollKey(key), String(y));
+    } catch {
+      // Ignore private-mode storage failures; history state is still available.
+    }
+    window.history.replaceState(
+      { ...state, wlKey: key, wlScrollY: y },
+      "",
+      window.location.href
+    );
+  }
+
+  function savedScrollFor(state) {
+    if (typeof state?.wlScrollY === "number") return state.wlScrollY;
+    try {
+      const stored = sessionStorage.getItem(scrollKey(state?.wlKey));
+      return stored == null ? 0 : Math.max(0, Number(stored) || 0);
+    } catch {
+      return 0;
+    }
+  }
+
+  function restoreScroll(y) {
+    const target = Math.max(0, Number(y) || 0);
+    suppressScrollSave = true;
+    window.clearTimeout(scrollSaveTimer);
+    window.scrollTo({ top: target, left: 0, behavior: "auto" });
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: target, left: 0, behavior: "auto" });
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: target, left: 0, behavior: "auto" });
+        window.setTimeout(() => {
+          suppressScrollSave = false;
+        }, 80);
+      });
+    });
+  }
+
+  if (ENABLE_PJAX && (!currentHistoryKey() || typeof currentHistoryState().wlScrollY !== "number")) {
+    saveCurrentScroll();
+  }
+
+  let scrollSaveTimer = null;
+  if (ENABLE_PJAX) {
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (document.body.classList.contains("nav-open") || suppressScrollSave) return;
+        window.clearTimeout(scrollSaveTimer);
+        scrollSaveTimer = window.setTimeout(saveCurrentScroll, 120);
+      },
+      { passive: true }
+    );
+  }
 
   function isEnhancedNavigationTarget(link) {
     if (!main || !link) return false;
@@ -158,7 +247,11 @@
     });
   }
 
-  async function navigate(url, push = true) {
+  async function navigate(url, options = {}) {
+    const { push = true, restoreY = 0 } = options;
+    if (push) saveCurrentScroll({ force: true });
+    suppressScrollSave = true;
+    window.clearTimeout(scrollSaveTimer);
     if (navAbort) navAbort.abort();
     navAbort = new AbortController();
     document.documentElement.classList.add("wl-page-loading");
@@ -173,28 +266,38 @@
       const nextMain = doc.getElementById("main-content");
       if (!nextMain) throw new Error("Missing main content");
       document.title = doc.title;
+      window.WLCloseNavMenu?.();
       document.body.className = doc.body.className;
       document.body.classList.add("has-fixed-nav");
       document.body.dataset.loggedIn = doc.body.dataset.loggedIn || "false";
-      window.WLCloseNavMenu?.();
       main.innerHTML = nextMain.innerHTML;
-      if (push) window.history.pushState({}, "", url);
-      window.scrollTo({ top: 0, behavior: prefersReducedMotion.matches ? "auto" : "smooth" });
+      if (push) window.history.pushState({ wlKey: makeHistoryKey(), wlScrollY: 0 }, "", url);
       runPageEnhancers();
       window.dispatchEvent(new CustomEvent("wl:pagemount"));
+      restoreScroll(push ? 0 : restoreY);
     } catch (err) {
       if (err.name !== "AbortError") window.location.href = url;
+      suppressScrollSave = false;
     } finally {
       document.documentElement.classList.remove("wl-page-loading");
     }
   }
 
   document.addEventListener("click", (event) => {
+    if (!ENABLE_PJAX) return;
     const link = event.target.closest("a[href]");
     if (!isEnhancedNavigationTarget(link)) return;
     event.preventDefault();
-    navigate(link.href);
+    navigate(link.href, { push: true, restoreY: 0 });
   });
 
-  window.addEventListener("popstate", () => navigate(window.location.href, false));
+  window.addEventListener("popstate", (event) => {
+    if (!ENABLE_PJAX) return;
+    const restoreY = savedScrollFor(event.state);
+    navigate(window.location.href, { push: false, restoreY });
+  });
+
+  if (ENABLE_PJAX) {
+    window.addEventListener("pagehide", () => saveCurrentScroll({ force: true }));
+  }
 })();

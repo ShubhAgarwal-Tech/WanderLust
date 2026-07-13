@@ -82,7 +82,7 @@
 
 /* Smooth theme switch (no layout shift) */
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
 }
 
 html.theme-transition,
